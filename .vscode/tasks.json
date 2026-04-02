@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: dev (Vite)",
+      "type": "npm",
+      "script": "dev",
+      "detail": "Start Vite dev server — use this instead of Live Server",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "group": "none"
+    }
+  ]
+}

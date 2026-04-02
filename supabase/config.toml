@@ -1,0 +1,10 @@
+# Link project: supabase link --project-ref YOUR_PROJECT_REF
+# Secrets: supabase secrets set RESEND_API_KEY=re_xxx WEBHOOK_SECRET=$(openssl rand -hex 16) LEAD_NOTIFY_EMAIL=mactrabka@gmail.com
+# Deploy: supabase functions deploy notify-new-lead
+#
+# Then in Dashboard → Database → Webhooks: table public.leads, INSERT only,
+# URL https://YOUR_PROJECT_REF.supabase.co/functions/v1/notify-new-lead
+# Header: Authorization: Bearer <same WEBHOOK_SECRET>
+
+[functions.notify-new-lead]
+verify_jwt = false
