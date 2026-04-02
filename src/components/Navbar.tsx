@@ -49,7 +49,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <nav aria-label="Nawigacja główna" className="flex flex-col gap-1 border-t border-section bg-cream px-4 py-4 md:hidden">
+        <nav aria-label="Menu mobilne" className="flex flex-col gap-1 border-t border-section bg-cream px-4 py-4 md:hidden">
           {links.map(({ to, label }) => (
             <NavLink
               key={to}

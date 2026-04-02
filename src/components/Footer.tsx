@@ -18,21 +18,24 @@ export default function Footer() {
             opowiedzianeswiatlem@gmail.com
           </a>
           <a
-            href="https://instagram.com"
+            href="https://instagram.com/opowiedzianeswiatlem"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 hover:text-accent"
           >
             <Instagram className="h-4 w-4" aria-hidden="true" />
-            Profil na Instagramie
+            @opowiedzianeswiatlem
           </a>
           <Link to="/contact" className="hover:text-accent">
             Kontakt
           </Link>
         </div>
-        <p className="text-xs text-ink/50">
-          © {new Date().getFullYear()} Kaja. Wszelkie prawa zastrzeżone.
-        </p>
+        <nav aria-label="Linki prawne" className="flex flex-wrap gap-4 text-xs text-ink/50">
+          <Link to="/privacy" className="hover:text-accent">
+            Polityka prywatności
+          </Link>
+          <span>© {new Date().getFullYear()} Kaja. Wszelkie prawa zastrzeżone.</span>
+        </nav>
       </div>
     </footer>
   );

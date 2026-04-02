@@ -42,13 +42,13 @@ export default function Contact() {
             </li>
             <li>
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/opowiedzianeswiatlem"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 hover:text-accent"
               >
                 <Instagram className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
-                Profil na Instagramie
+                @opowiedzianeswiatlem
               </a>
             </li>
           </ul>

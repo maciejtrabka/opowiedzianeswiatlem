@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useId } from "react";
 import type { FormEvent, ChangeEvent, KeyboardEvent } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
@@ -190,6 +191,8 @@ type FormState = {
   location: string;
   message: string;
   source: string;
+  consent: boolean;
+  website: string;
 };
 
 const initial: FormState = {
@@ -200,6 +203,8 @@ const initial: FormState = {
   location: "",
   message: "",
   source: "",
+  consent: false,
+  website: "",
 };
 
 type SubmitStatus = "idle" | "loading" | "success" | "error";
@@ -207,7 +212,7 @@ type SubmitStatus = "idle" | "loading" | "success" | "error";
 const SUBMIT_COOLDOWN_MS = 60_000;
 let lastSubmitAt = 0;
 
-type FieldErrors = { name?: string; email?: string };
+type FieldErrors = { name?: string; email?: string; consent?: string };
 
 function validateName(value: string): string | undefined {
   const trimmed = value.trim();
@@ -248,10 +253,15 @@ export default function ContactForm() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    if (form.website) return;
+
     const nameErr = validateName(form.name);
     const emailErr = validateEmail(form.email);
-    if (nameErr || emailErr) {
-      setFieldErrors({ name: nameErr, email: emailErr });
+    const consentErr = form.consent
+      ? undefined
+      : "Zaznacz zgodę na przetwarzanie danych.";
+    if (nameErr || emailErr || consentErr) {
+      setFieldErrors({ name: nameErr, email: emailErr, consent: consentErr });
       setStatus("idle");
       return;
     }
@@ -448,6 +458,55 @@ export default function ContactForm() {
                 ))}
               </select>
             </label>
+
+            <div className="sr-only" aria-hidden="true">
+              <label htmlFor="contact-website">Website</label>
+              <input
+                type="text"
+                id="contact-website"
+                name="website"
+                value={form.website}
+                onChange={onChange}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                name="consent"
+                checked={form.consent}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, consent: e.target.checked }))
+                }
+                aria-invalid={Boolean(fieldErrors.consent)}
+                aria-describedby={
+                  fieldErrors.consent ? "contact-consent-error" : undefined
+                }
+                className="mt-1 h-4 w-4 shrink-0 accent-accent"
+              />
+              <span className="text-xs leading-relaxed text-ink/75">
+                Wyrażam zgodę na przetwarzanie moich danych osobowych w celu
+                odpowiedzi na zapytanie, zgodnie z{" "}
+                <Link
+                  to="/privacy"
+                  target="_blank"
+                  className="text-accent underline underline-offset-2 hover:text-ink"
+                >
+                  polityką prywatności
+                </Link>.
+              </span>
+            </label>
+            {fieldErrors.consent && (
+              <p
+                id="contact-consent-error"
+                className="text-sm text-red-800"
+                role="alert"
+              >
+                {fieldErrors.consent}
+              </p>
+            )}
 
             {status === "error" && error && (
               <p className="text-sm text-red-700" role="alert">

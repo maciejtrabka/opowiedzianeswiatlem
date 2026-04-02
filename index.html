@@ -3,7 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Opowiedziane Światłem — Kaja</title>
+    <title>Opowiedziane Światłem — Fotografia ślubna | Kaja</title>
+    <meta
+      name="description"
+      content="Opowiedziane Światłem — naturalna fotografia ślubna i rodzinna. Kaja uwiecznia emocje i chwile, które zostają na zawsze. Reportaże ślubne, sesje narzeczeńskie i rodzinne."
+    />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Opowiedziane Światłem — Fotografia ślubna | Kaja" />
+    <meta
+      property="og:description"
+      content="Naturalna fotografia ślubna i rodzinna. Reportaże ślubne, sesje narzeczeńskie i rodzinne pełne emocji."
+    />
+    <meta property="og:url" content="https://opowiedzianeswiatlem.pl/" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:site_name" content="Opowiedziane Światłem" />
+
+    <meta property="og:image" content="https://opowiedzianeswiatlem.pl/og-image.jpg" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Opowiedziane Światłem — Fotografia ślubna | Kaja" />
+    <meta
+      name="twitter:description"
+      content="Naturalna fotografia ślubna i rodzinna. Reportaże ślubne, sesje narzeczeńskie i rodzinne pełne emocji."
+    />
+    <meta name="twitter:image" content="https://opowiedzianeswiatlem.pl/og-image.jpg" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -26,6 +52,32 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="max-width:600px;margin:4rem auto;padding:2rem;text-align:center;font-family:sans-serif;color:#4a4a4a">
+        <h1>Opowiedziane Światłem</h1>
+        <p>Ta strona wymaga włączonego JavaScriptu. Włącz JavaScript w ustawieniach przeglądarki i odśwież stronę.</p>
+        <p>Kontakt: <a href="mailto:opowiedzianeswiatlem@gmail.com">opowiedzianeswiatlem@gmail.com</a></p>
+      </div>
+    </noscript>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "additionalType": "https://schema.org/Photographer",
+        "name": "Opowiedziane Światłem",
+        "description": "Naturalna fotografia ślubna i rodzinna — Kaja. Reportaże ślubne, sesje narzeczeńskie i rodzinne.",
+        "url": "https://opowiedzianeswiatlem.pl",
+        "email": "opowiedzianeswiatlem@gmail.com",
+        "telephone": "+48782328451",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "PL"
+        },
+        "priceRange": "$$",
+        "serviceType": ["Fotografia ślubna", "Sesja narzeczeńska", "Sesja rodzinna"],
+        "knowsLanguage": "pl"
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
