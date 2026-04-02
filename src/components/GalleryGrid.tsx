@@ -37,31 +37,37 @@ export default function GalleryGrid({ items, onImageClick }: GalleryGridProps) {
           variants={itemVariants}
           initial="hidden"
           animate="show"
-          className="group cursor-pointer overflow-hidden rounded-sm bg-section shadow-sm"
-          onClick={() => onImageClick?.(i)}
+          className="group overflow-hidden rounded-sm bg-section shadow-sm"
         >
-          <div className="aspect-[3/4] overflow-hidden">
-            <img
-              src={storagePublicUrl(item.storagePath)}
-              alt=""
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              loading="lazy"
-              onError={(e) => {
-                const el = e.currentTarget;
-                if (import.meta.env.VITE_USE_DEMO_GALLERY_IMAGES === "true")
-                  return;
-                if (el.dataset.fallback === "1") return;
-                el.dataset.fallback = "1";
-                el.src = galleryImageFallbackUrl(item.storagePath);
-                if (import.meta.env.DEV) {
-                  console.warn(
-                    "[gallery] Nie załadowano obrazu — użyto placeholdera. Sprawdź plik w public/, ścieżkę w portfolio.ts, bucket Supabase lub ustaw VITE_USE_DEMO_GALLERY_IMAGES=true. Pierwotny URL:",
-                    storagePublicUrl(item.storagePath),
-                  );
-                }
-              }}
-            />
-          </div>
+          <button
+            type="button"
+            className="w-full cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            onClick={() => onImageClick?.(i)}
+            aria-label={`${item.category} — otwórz zdjęcie ${i + 1}`}
+          >
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
+                src={storagePublicUrl(item.storagePath)}
+                alt={`${item.category}, zdjęcie ${i + 1}`}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                loading="lazy"
+                onError={(e) => {
+                  const el = e.currentTarget;
+                  if (import.meta.env.VITE_USE_DEMO_GALLERY_IMAGES === "true")
+                    return;
+                  if (el.dataset.fallback === "1") return;
+                  el.dataset.fallback = "1";
+                  el.src = galleryImageFallbackUrl(item.storagePath);
+                  if (import.meta.env.DEV) {
+                    console.warn(
+                      "[gallery] Nie załadowano obrazu — użyto placeholdera. Sprawdź plik w public/, ścieżkę w portfolio.ts, bucket Supabase lub ustaw VITE_USE_DEMO_GALLERY_IMAGES=true. Pierwotny URL:",
+                      storagePublicUrl(item.storagePath),
+                    );
+                  }
+                }}
+              />
+            </div>
+          </button>
         </motion.li>
       ))}
     </motion.ul>

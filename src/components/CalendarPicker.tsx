@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type RefCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -75,6 +75,15 @@ export default function CalendarPicker({
 
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const dialogContentRef: RefCallback<HTMLDivElement> = useCallback(
+    (node) => {
+      if (node) {
+        const firstFocusable = node.querySelector<HTMLElement>("button");
+        firstFocusable?.focus();
+      }
+    },
+    [],
+  );
 
   const initialView = useCallback(() => {
     const p = value ? parseIso(value) : null;
@@ -156,6 +165,7 @@ export default function CalendarPicker({
       <AnimatePresence>
         {open && (
           <motion.div
+            ref={dialogContentRef}
             id={gridId}
             role="dialog"
             aria-modal="true"
@@ -205,6 +215,8 @@ export default function CalendarPicker({
                     key={day}
                     type="button"
                     onClick={() => selectDay(day)}
+                    aria-label={`${day} ${MONTHS_PL[m0]} ${y}`}
+                    aria-pressed={value === toIsoDate(y, m0, day)}
                     className={`aspect-square text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset ${
                       value === toIsoDate(y, m0, day)
                         ? "bg-accent font-medium text-cream"

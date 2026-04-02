@@ -1,17 +1,22 @@
+import { useEffect } from "react";
 import { Instagram, Mail, Phone } from "lucide-react";
 import ContactForm from "../components/ContactForm";
 
 export default function Contact() {
+  useEffect(() => {
+    document.title = "Kontakt — Opowiedziane Światłem";
+  }, []);
+
   return (
     <div className="min-h-screen bg-cream">
-      <div className="border-b border-section bg-section/40 py-16 text-center md:py-20">
+      <header className="border-b border-section bg-section/40 py-16 text-center md:py-20">
         <h1 className="font-serif text-4xl text-ink md:text-5xl">Kontakt</h1>
         <p className="mx-auto mt-4 max-w-lg text-ink/75">
           Porozmawiajmy o Waszym dniu lub sesji.
         </p>
-      </div>
+      </header>
 
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-14 md:grid-cols-2 md:gap-16 md:px-6 md:py-20">
+      <section className="mx-auto grid max-w-6xl gap-12 px-4 py-14 md:grid-cols-2 md:gap-16 md:px-6 md:py-20" aria-label="Dane kontaktowe i formularz">
         <div>
           <h2 className="font-serif text-2xl text-ink">Kaja</h2>
           <p className="mt-2 text-ink/75">Opowiedziane Światłem</p>
@@ -22,7 +27,7 @@ export default function Contact() {
                 href="tel:+48782328451"
                 className="inline-flex items-center gap-3 hover:text-accent"
               >
-                <Phone className="h-5 w-5 shrink-0 text-accent" />
+                <Phone className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
                 <span>782 328 451</span>
               </a>
             </li>
@@ -31,7 +36,7 @@ export default function Contact() {
                 href="mailto:opowiedzianeswiatlem@gmail.com"
                 className="inline-flex items-center gap-3 break-all hover:text-accent"
               >
-                <Mail className="h-5 w-5 shrink-0 text-accent" />
+                <Mail className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
                 opowiedzianeswiatlem@gmail.com
               </a>
             </li>
@@ -41,9 +46,8 @@ export default function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 hover:text-accent"
-                aria-label="Profil na Instagramie"
               >
-                <Instagram className="h-5 w-5 shrink-0 text-accent" />
+                <Instagram className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
                 Profil na Instagramie
               </a>
             </li>
@@ -64,7 +68,7 @@ export default function Contact() {
             <ContactForm />
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

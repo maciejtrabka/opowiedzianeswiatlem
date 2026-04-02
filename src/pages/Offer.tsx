@@ -1,4 +1,10 @@
+import { useEffect } from "react";
+
 export default function Offer() {
+  useEffect(() => {
+    document.title = "Oferta — Opowiedziane Światłem";
+  }, []);
+
   const cards = [
     {
       title: "Reportaż ślubny",
@@ -16,13 +22,13 @@ export default function Offer() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <div className="border-b border-section bg-section/40 py-16 text-center md:py-20">
+      <header className="border-b border-section bg-section/40 py-16 text-center md:py-20">
         <h1 className="font-serif text-4xl text-ink md:text-5xl">Oferta</h1>
         <p className="mx-auto mt-4 max-w-lg text-ink/75">
           Pakiety i możliwości współpracy — dopasujemy szczegóły do Waszych potrzeb.
         </p>
-      </div>
-      <div className="mx-auto grid max-w-5xl gap-8 px-4 py-16 md:grid-cols-3 md:px-6 md:py-24">
+      </header>
+      <section className="mx-auto grid max-w-5xl gap-8 px-4 py-16 md:grid-cols-3 md:px-6 md:py-24" aria-label="Pakiety ofertowe">
         {cards.map((card) => (
           <article
             key={card.title}
@@ -32,7 +38,7 @@ export default function Offer() {
             <p className="mt-4 text-sm leading-relaxed text-ink/80">{card.text}</p>
           </article>
         ))}
-      </div>
+      </section>
       <p className="mx-auto max-w-xl px-4 pb-20 text-center text-sm text-ink/65 md:px-6">
         Szczegółowe ceny i dostępność terminów ustalamy indywidualnie — napisz
         przez formularz kontaktowy.

@@ -65,13 +65,13 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
 
   return (
     <>
-      <div className="flex flex-col md:hidden">
+      <div className="flex flex-col md:hidden" role="group" aria-roledescription="karuzela" aria-label="Zdjęcia główne">
         {slides.map((s, i) => (
           <div key={s.storagePath} className="relative w-full bg-section">
             <ImageWithFallback
               src={storagePublicUrl(s.storagePath)}
               fallbackSrc={s.fallbackSrc}
-              alt=""
+              alt={`Fotografia ślubna ${i + 1}`}
               className="block h-auto w-full max-w-full"
             />
             <div className="absolute inset-0 bg-ink/35" aria-hidden />
@@ -86,6 +86,9 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
 
       <div
         className="relative hidden min-h-[85vh] w-full overflow-hidden bg-section md:block md:min-h-[90vh]"
+        role="group"
+        aria-roledescription="karuzela"
+        aria-label="Zdjęcia główne"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
@@ -102,7 +105,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
               <ImageWithFallback
                 src={storagePublicUrl(slide.storagePath)}
                 fallbackSrc={slide.fallbackSrc}
-                alt=""
+                alt={`Fotografia ślubna ${index + 1}`}
                 className="h-full w-full object-cover"
               />
             ) : null}

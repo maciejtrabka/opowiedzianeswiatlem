@@ -1,17 +1,22 @@
+import { useEffect } from "react";
 import ImageWithFallback from "../components/ImageWithFallback";
 import { aboutPhotoFallbackSrc, aboutPhotoStoragePath } from "../data/site";
 import { storagePublicUrl } from "../lib/storagePublicUrl";
 
 export default function About() {
+  useEffect(() => {
+    document.title = "O mnie — Opowiedziane Światłem";
+  }, []);
+
   return (
     <div className="min-h-screen bg-cream">
-      <div className="border-b border-section bg-section/40 py-16 text-center md:py-20">
+      <header className="border-b border-section bg-section/40 py-16 text-center md:py-20">
         <h1 className="font-serif text-4xl text-ink md:text-5xl">O mnie</h1>
         <p className="mx-auto mt-4 max-w-lg text-ink/75">
           Kilka słów o tym, kim jestem i jak pracuję.
         </p>
-      </div>
-      <div className="mx-auto max-w-2xl px-4 py-16 md:px-6 md:py-24">
+      </header>
+      <section className="mx-auto max-w-2xl px-4 py-16 md:px-6 md:py-24" aria-label="O fotografce">
         <div className="mb-10 overflow-hidden rounded-sm bg-section shadow-sm">
           <ImageWithFallback
             src={storagePublicUrl(aboutPhotoStoragePath)}
@@ -33,7 +38,7 @@ export default function About() {
           kolory i emocje zamknięte w kadrze. Treść tej strony możesz uzupełnić
           o swoją historię, ulubione cytaty i zdjęcie autorskie.
         </p>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { PortfolioItem } from "../data/portfolio";
 import { storagePublicUrl } from "../lib/storagePublicUrl";
@@ -16,6 +16,10 @@ export default function Lightbox({
   onClose,
   onChange,
 }: LightboxProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
   const prev = useCallback(() => {
     onChange((currentIndex - 1 + items.length) % items.length);
   }, [currentIndex, items.length, onChange]);
@@ -25,10 +29,40 @@ export default function Lightbox({
   }, [currentIndex, items.length, onChange]);
 
   useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    closeRef.current?.focus();
+
+    return () => {
+      previousFocusRef.current?.focus();
+    };
+  }, []);
+
+  useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
+
+      if (e.key === "Tab") {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusable?.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -46,6 +80,10 @@ export default function Lightbox({
 
   return (
     <motion.div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Przeglądarka zdjęć — ${item.category}, zdjęcie ${currentIndex + 1} z ${items.length}`}
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/90"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -79,6 +117,7 @@ export default function Lightbox({
       </div>
 
       <button
+        ref={closeRef}
         type="button"
         onClick={(e) => {
           e.stopPropagation();
@@ -94,7 +133,7 @@ export default function Lightbox({
         <motion.img
           key={item.id}
           src={storagePublicUrl(item.storagePath)}
-          alt=""
+          alt={`${item.category}, zdjęcie ${currentIndex + 1}`}
           className="pointer-events-none relative z-0 max-h-[85vh] max-w-[90vw] rounded-sm object-contain"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -103,7 +142,11 @@ export default function Lightbox({
         />
       </AnimatePresence>
 
-      <div className="absolute bottom-4 z-20 font-sans text-sm text-cream/60">
+      <div
+        className="absolute bottom-4 z-20 font-sans text-sm text-cream/60"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {currentIndex + 1} / {items.length}
       </div>
     </motion.div>

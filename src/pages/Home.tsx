@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import HeroSlider from "../components/HeroSlider";
 import { heroSlides } from "../data/portfolio";
 
 export default function Home() {
+  useEffect(() => {
+    document.title = "Opowiedziane Światłem — Fotografia ślubna";
+  }, []);
+
   return (
     <>
       <HeroSlider slides={heroSlides} />

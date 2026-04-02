@@ -14,7 +14,7 @@ export default function Footer() {
             href="mailto:opowiedzianeswiatlem@gmail.com"
             className="inline-flex items-center gap-2 hover:text-accent"
           >
-            <Mail className="h-4 w-4" />
+            <Mail className="h-4 w-4" aria-hidden="true" />
             opowiedzianeswiatlem@gmail.com
           </a>
           <a
@@ -22,9 +22,8 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 hover:text-accent"
-            aria-label="Profil na Instagramie"
           >
-            <Instagram className="h-4 w-4" />
+            <Instagram className="h-4 w-4" aria-hidden="true" />
             Profil na Instagramie
           </a>
           <Link to="/contact" className="hover:text-accent">

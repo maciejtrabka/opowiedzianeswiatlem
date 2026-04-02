@@ -376,7 +376,7 @@ export default function ContactForm() {
               </label>
             </div>
 
-            <label className="block">
+            <div className="block">
               <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-ink/70">
                 Temat
               </span>
@@ -387,7 +387,7 @@ export default function ContactForm() {
                   setForm((f) => ({ ...f, subject }))
                 }
               />
-            </label>
+            </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
               <label className="block">
@@ -462,7 +462,7 @@ export default function ContactForm() {
             >
               {status === "loading" ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                   Wysyłanie…
                 </>
               ) : (
