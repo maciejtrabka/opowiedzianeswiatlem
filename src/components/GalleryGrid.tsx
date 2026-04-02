@@ -20,9 +20,10 @@ const itemVariants: Variants = {
 
 type GalleryGridProps = {
   items: PortfolioItem[];
+  onImageClick?: (index: number) => void;
 };
 
-export default function GalleryGrid({ items }: GalleryGridProps) {
+export default function GalleryGrid({ items, onImageClick }: GalleryGridProps) {
   return (
     <motion.ul
       layout
@@ -36,7 +37,8 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
           variants={itemVariants}
           initial="hidden"
           animate="show"
-          className="group overflow-hidden rounded-sm bg-section shadow-sm"
+          className="group cursor-pointer overflow-hidden rounded-sm bg-section shadow-sm"
+          onClick={() => onImageClick?.(i)}
         >
           <div className="aspect-[3/4] overflow-hidden">
             <img

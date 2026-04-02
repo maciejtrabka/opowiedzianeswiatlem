@@ -17,10 +17,11 @@ function resolveObjectPath(objectPath: string): string {
   return `${pathPrefix}/${path}`;
 }
 
-/** Deterministic placeholder when Storage is missing or a tile fails to load. */
-export function galleryImageFallbackUrl(objectPath: string): string {
-  const seed = resolveObjectPath(objectPath).replace(/\W/g, "") || "demo";
-  return `https://picsum.photos/seed/${encodeURIComponent(seed)}/800/1067`;
+/** Fallback image when Storage is missing or a tile fails to load. */
+export const FALLBACK_IMAGE = "/fallback.png";
+
+export function galleryImageFallbackUrl(_objectPath: string): string {
+  return FALLBACK_IMAGE;
 }
 
 /** Public URL for an object in the configured Storage bucket (bucket must be public). */

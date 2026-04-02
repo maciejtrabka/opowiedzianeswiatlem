@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import GalleryGrid from "../components/GalleryGrid";
+import Lightbox from "../components/Lightbox";
 import {
   portfolioCategories,
   portfolioItems,
@@ -12,6 +13,7 @@ type PortfolioTab = typeof ALL | PortfolioCategory;
 
 export default function Portfolio() {
   const [active, setActive] = useState<PortfolioTab>(ALL);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const tabs = useMemo(() => [ALL, ...portfolioCategories] as const, []);
 
@@ -19,6 +21,8 @@ export default function Portfolio() {
     if (active === ALL) return portfolioItems;
     return portfolioItems.filter((p) => p.category === active);
   }, [active]);
+
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
 
   return (
     <div className="min-h-screen bg-cream">
@@ -63,11 +67,25 @@ export default function Portfolio() {
                 Brak zdjęć w tej kategorii.
               </p>
             ) : (
-              <GalleryGrid items={filtered} />
+              <GalleryGrid
+                items={filtered}
+                onImageClick={(i) => setLightboxIndex(i)}
+              />
             )}
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <Lightbox
+            items={filtered}
+            currentIndex={lightboxIndex}
+            onClose={closeLightbox}
+            onChange={setLightboxIndex}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

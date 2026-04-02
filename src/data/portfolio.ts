@@ -67,29 +67,9 @@ export type HeroSlide = {
 
 /** Bucket: `ui/hero/01.jpg`, `02.jpg`, … (same convention as portfolio paths). */
 export const heroSlides: HeroSlide[] = [
-  {
-    storagePath: "ui/hero/11.jpg",
-    fallbackSrc:
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=85",
-  },
-  {
-    storagePath: "ui/hero/13.jpg",
-    fallbackSrc:
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=85",
-  },
-  {
-    storagePath: "ui/hero/12.jpg",
-    fallbackSrc:
-      "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1920&q=85",
-  },
-  {
-    storagePath: "ui/hero/14.jpg",
-    fallbackSrc:
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=85",
-  },
-  {
-    storagePath: "ui/hero/15.jpg",
-    fallbackSrc:
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=85",
-  },
+  { storagePath: "ui/hero/11.jpg", fallbackSrc: "/fallback.png" },
+  { storagePath: "ui/hero/13.jpg", fallbackSrc: "/fallback.png" },
+  { storagePath: "ui/hero/12.jpg", fallbackSrc: "/fallback.png" },
+  { storagePath: "ui/hero/14.jpg", fallbackSrc: "/fallback.png" },
+  { storagePath: "ui/hero/15.jpg", fallbackSrc: "/fallback.png" },
 ];
