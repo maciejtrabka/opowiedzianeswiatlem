@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
@@ -11,13 +11,29 @@ const links = [
   { to: "/contact", label: "Kontakt" },
 ] as const;
 
-const linkClass = ({ isActive }: { isActive: boolean }) =>
+const desktopLinkClass = ({ isActive }: { isActive: boolean }) =>
   `text-sm tracking-wide transition-colors ${
     isActive ? "text-accent" : "text-ink/80 hover:text-accent"
   }`;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const handler = () => {
+      if (mq.matches) setOpen(false);
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-section/80 bg-cream/90 backdrop-blur-md">
@@ -29,9 +45,17 @@ export default function Navbar() {
           Opowiedziane Światłem
         </Link>
 
-        <nav aria-label="Nawigacja główna" className="hidden items-center gap-8 md:flex">
+        <nav
+          aria-label="Nawigacja główna"
+          className="hidden items-center gap-8 md:flex"
+        >
           {links.map(({ to, label }) => (
-            <NavLink key={to} to={to} className={linkClass} end={to === "/"}>
+            <NavLink
+              key={to}
+              to={to}
+              className={desktopLinkClass}
+              end={to === "/"}
+            >
               {label}
             </NavLink>
           ))}
@@ -39,30 +63,52 @@ export default function Navbar() {
 
         <button
           type="button"
-          className="rounded-md p-2 text-ink md:hidden"
+          className="rounded-md p-2 text-ink transition-colors hover:text-accent md:hidden"
           aria-expanded={open}
           aria-label={open ? "Zamknij menu" : "Otwórz menu"}
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
+          {open ? (
+            <X className="h-6 w-6" aria-hidden="true" />
+          ) : (
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          )}
         </button>
       </div>
 
-      {open && (
-        <nav aria-label="Menu mobilne" className="flex flex-col gap-1 border-t border-section bg-cream px-4 py-4 md:hidden">
-          {links.map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === "/"}
-              className={linkClass}
-              onClick={() => setOpen(false)}
-            >
-              {label}
-            </NavLink>
+      <nav
+        aria-label="Menu mobilne"
+        aria-hidden={!open}
+        className={`absolute inset-x-0 top-full flex h-[calc(100dvh-100%)] flex-col border-t border-section/60 bg-cream transition-all duration-300 ease-out md:hidden ${
+          open
+            ? "visible opacity-100"
+            : "invisible pointer-events-none opacity-0"
+        }`}
+      >
+        <ul className="flex flex-col px-6 pt-4">
+          {links.map(({ to, label }, i) => (
+            <li key={to}>
+              <NavLink
+                to={to}
+                end={to === "/"}
+                className={({ isActive }) =>
+                  `block border-b border-section/40 py-4 text-lg tracking-wide transition-all duration-300 ease-out ${
+                    isActive
+                      ? "font-serif text-accent"
+                      : "text-ink/70 active:text-accent"
+                  } ${open ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"}`
+                }
+                style={{
+                  transitionDelay: open ? `${50 + i * 60}ms` : "0ms",
+                }}
+                onClick={() => setOpen(false)}
+              >
+                {label}
+              </NavLink>
+            </li>
           ))}
-        </nav>
-      )}
+        </ul>
+      </nav>
     </header>
   );
 }
