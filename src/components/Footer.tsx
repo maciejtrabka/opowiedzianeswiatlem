@@ -11,11 +11,11 @@ export default function Footer() {
         </div>
         <div className="flex flex-wrap items-center gap-6 text-sm text-ink/80">
           <a
-            href="mailto:opowiedzianeswiatłem@gmail.com"
+            href="mailto:opowiedzianeswiatlem@gmail.com"
             className="inline-flex items-center gap-2 hover:text-accent"
           >
             <Mail className="h-4 w-4" />
-            opowiedzianeswiatłem@gmail.com
+            opowiedzianeswiatlem@gmail.com
           </a>
           <a
             href="https://instagram.com"

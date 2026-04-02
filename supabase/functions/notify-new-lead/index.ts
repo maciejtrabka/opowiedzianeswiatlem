@@ -4,7 +4,7 @@
  * Setup:
  * 1. Resend: https://resend.com — create API key; for testing you can use from "onboarding@resend.dev"
  *    (sends only to your Resend account email until you verify a domain).
- * 2. supabase secrets set RESEND_API_KEY=re_... WEBHOOK_SECRET=<long-random> LEAD_NOTIFY_EMAIL=mactrabka@gmail.com
+ * 2. supabase secrets set RESEND_API_KEY=re_... WEBHOOK_SECRET=<long-random> LEAD_NOTIFY_EMAIL=your-email@example.com
  * 3. supabase functions deploy notify-new-lead
  * 4. Dashboard → Database → Webhooks → New: public.leads, Insert → POST
  *    https://<project-ref>.supabase.co/functions/v1/notify-new-lead
@@ -44,7 +44,11 @@ Deno.serve(async (req) => {
   }
 
   const resendKey = Deno.env.get("RESEND_API_KEY");
-  const notifyTo = Deno.env.get("LEAD_NOTIFY_EMAIL")?.trim() || "mactrabka@gmail.com";
+  const notifyTo = Deno.env.get("LEAD_NOTIFY_EMAIL")?.trim();
+  if (!notifyTo) {
+    console.error("Missing LEAD_NOTIFY_EMAIL");
+    return new Response("Server misconfigured", { status: 500 });
+  }
   const from =
     Deno.env.get("RESEND_FROM_EMAIL")?.trim() || "onboarding@resend.dev";
 

@@ -20,5 +20,20 @@ create policy "Allow anonymous insert"
   to anon
   with check (true);
 
--- Optional: deny select/update/delete for anon
--- create policy "No public read" on public.leads for select to anon using (false);
+create policy "No public read"
+  on public.leads
+  for select
+  to anon
+  using (false);
+
+create policy "No public update"
+  on public.leads
+  for update
+  to anon
+  using (false);
+
+create policy "No public delete"
+  on public.leads
+  for delete
+  to anon
+  using (false);

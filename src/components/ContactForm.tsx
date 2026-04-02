@@ -204,6 +204,9 @@ const initial: FormState = {
 
 type SubmitStatus = "idle" | "loading" | "success" | "error";
 
+const SUBMIT_COOLDOWN_MS = 60_000;
+let lastSubmitAt = 0;
+
 type FieldErrors = { name?: string; email?: string };
 
 function validateName(value: string): string | undefined {
@@ -253,6 +256,14 @@ export default function ContactForm() {
       return;
     }
     setFieldErrors({});
+
+    const now = Date.now();
+    if (now - lastSubmitAt < SUBMIT_COOLDOWN_MS) {
+      setStatus("error");
+      setError("Zbyt wiele prób — odczekaj chwilę przed kolejnym wysłaniem.");
+      return;
+    }
+
     setStatus("loading");
 
     const payload: LeadInsert = {
@@ -268,14 +279,15 @@ export default function ContactForm() {
     const { error: insertError } = await supabase.from("leads").insert(payload);
 
     if (insertError) {
+      console.error("Lead insert failed:", insertError.message);
       setStatus("error");
       setError(
-        insertError.message ||
-          "Nie udało się wysłać wiadomości. Spróbuj ponownie lub napisz bezpośrednio na e-mail.",
+        "Nie udało się wysłać wiadomości. Spróbuj ponownie lub napisz bezpośrednio na e-mail.",
       );
       return;
     }
 
+    lastSubmitAt = Date.now();
     setStatus("success");
     setForm(initial);
     setFieldErrors({});

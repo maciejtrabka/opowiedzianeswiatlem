@@ -28,11 +28,11 @@ export default function Contact() {
             </li>
             <li>
               <a
-                href="mailto:opowiedzianeswiatłem@gmail.com"
+                href="mailto:opowiedzianeswiatlem@gmail.com"
                 className="inline-flex items-center gap-3 break-all hover:text-accent"
               >
                 <Mail className="h-5 w-5 shrink-0 text-accent" />
-                opowiedzianeswiatłem@gmail.com
+                opowiedzianeswiatlem@gmail.com
               </a>
             </li>
             <li>
