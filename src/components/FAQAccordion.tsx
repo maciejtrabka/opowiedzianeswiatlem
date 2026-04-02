@@ -11,14 +11,18 @@ export default function FAQAccordion({ items }: FAQAccordionProps) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <ul className="divide-y divide-section border border-section bg-cream">
-      {items.map((item) => {
+    <ul className="list-none divide-y divide-section border border-section bg-cream">
+      {items.map((item, index) => {
         const isOpen = openId === item.id;
         return (
           <li key={item.id}>
             <button
               type="button"
-              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-section/40 md:px-6 md:py-5"
+              className={`flex w-full items-center justify-between gap-4 px-5 text-left transition hover:bg-section/40 md:px-6 ${
+                index === 0
+                  ? "pb-4 pt-5 md:pb-5 md:pt-6"
+                  : "py-4 md:py-5"
+              }`}
               onClick={() => setOpenId(isOpen ? null : item.id)}
               aria-expanded={isOpen}
             >

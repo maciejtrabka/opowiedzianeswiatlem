@@ -1,9 +1,10 @@
-import { useState } from "react";
-import type { FormEvent, ChangeEvent } from "react";
+import { useState, useRef, useEffect, useId } from "react";
+import type { FormEvent, ChangeEvent, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { LeadInsert } from "../types/leads";
+import CalendarPicker from "./CalendarPicker";
 
 const subjects = [
   { value: "", label: "Wybierz temat" },
@@ -20,6 +21,166 @@ const sources = [
   { value: "google", label: "Wyszukiwarka internetowa" },
   { value: "inne", label: "Inne" },
 ] as const;
+
+const subjectOptions = subjects.filter((s) => s.value !== "");
+
+function SubjectSelect({
+  value,
+  onChange,
+  id,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  id: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [highlight, setHighlight] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const listId = useId();
+  const buttonId = `${id}-trigger`;
+
+  const focusTrigger = () => {
+    requestAnimationFrame(() => buttonRef.current?.focus());
+  };
+
+  const displayLabel =
+    subjects.find((s) => s.value === value)?.label ?? subjects[0].label;
+  const hasValue = Boolean(value);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      const idx = Math.max(
+        0,
+        subjectOptions.findIndex((s) => s.value === value),
+      );
+      setHighlight(idx >= 0 ? idx : 0);
+    }
+  }, [open, value]);
+
+  useEffect(() => {
+    if (open) {
+      listRef.current?.focus({ preventScroll: true });
+    }
+  }, [open]);
+
+  const selectAt = (index: number) => {
+    const opt = subjectOptions[index];
+    if (opt) onChange(opt.value);
+    setOpen(false);
+    focusTrigger();
+  };
+
+  const onButtonKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
+
+  const onListKeyDown = (e: KeyboardEvent<HTMLUListElement>) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      focusTrigger();
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlight((h) => (h + 1) % subjectOptions.length);
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlight((h) => (h - 1 + subjectOptions.length) % subjectOptions.length);
+    }
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      selectAt(highlight);
+    }
+    if (e.key === "Home") {
+      e.preventDefault();
+      setHighlight(0);
+    }
+    if (e.key === "End") {
+      e.preventDefault();
+      setHighlight(subjectOptions.length - 1);
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        ref={buttonRef}
+        type="button"
+        id={buttonId}
+        className={`flex w-full items-center justify-between gap-3 border bg-cream px-4 py-3 text-left text-ink outline-none transition focus:border-accent ${
+          open ? "border-accent" : "border-section"
+        } ${hasValue ? "" : "text-ink/50"}`}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => setOpen((o) => !o)}
+        onKeyDown={onButtonKeyDown}
+      >
+        <span>{displayLabel}</span>
+        <ChevronDown
+          className={`h-5 w-5 shrink-0 text-accent transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
+          aria-hidden
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            ref={listRef}
+            id={listId}
+            role="listbox"
+            tabIndex={-1}
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18 }}
+            className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-auto border border-section bg-cream py-1 shadow-lg shadow-ink/10"
+            aria-labelledby={buttonId}
+            onKeyDown={onListKeyDown}
+          >
+            {subjectOptions.map((s, i) => (
+              <li
+                key={s.value}
+                role="option"
+                aria-selected={value === s.value}
+                className={`cursor-pointer px-4 py-2.5 text-sm transition hover:bg-section/50 ${
+                  i === highlight ? "bg-section/35" : ""
+                } ${value === s.value ? "font-medium text-accent" : "text-ink"}`}
+                onMouseEnter={() => setHighlight(i)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  selectAt(i);
+                }}
+              >
+                {s.label}
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 type FormState = {
   name: string;
@@ -43,21 +204,55 @@ const initial: FormState = {
 
 type SubmitStatus = "idle" | "loading" | "success" | "error";
 
+type FieldErrors = { name?: string; email?: string };
+
+function validateName(value: string): string | undefined {
+  const trimmed = value.trim();
+  if (!trimmed) return "Podaj imię i nazwisko — tak łatwiej się do Ciebie zwrócimy.";
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  if (words.length < 2) {
+    return "Wpisz imię i nazwisko w dwóch słowach, np. „Anna Kowalska”.";
+  }
+  return undefined;
+}
+
+function validateEmail(value: string): string | undefined {
+  const trimmed = value.trim();
+  if (!trimmed) return "Podaj adres e-mail, żebyśmy mogli odpisać.";
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+  if (!ok) {
+    return "Ten adres wygląda na niepełny — sprawdź, czy jest @ i domena (np. imie@gmail.com).";
+  }
+  return undefined;
+}
+
 export default function ContactForm() {
   const [form, setForm] = useState<FormState>(initial);
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const onChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
+    if (name === "name" || name === "email") {
+      setFieldErrors((fe) => ({ ...fe, [name]: undefined }));
+    }
   };
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    const nameErr = validateName(form.name);
+    const emailErr = validateEmail(form.email);
+    if (nameErr || emailErr) {
+      setFieldErrors({ name: nameErr, email: emailErr });
+      setStatus("idle");
+      return;
+    }
+    setFieldErrors({});
     setStatus("loading");
 
     const payload: LeadInsert = {
@@ -83,6 +278,7 @@ export default function ContactForm() {
 
     setStatus("success");
     setForm(initial);
+    setFieldErrors({});
   };
 
   return (
@@ -117,6 +313,7 @@ export default function ContactForm() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onSubmit={onSubmit}
+            noValidate
             className="space-y-5"
           >
             <div className="grid gap-5 sm:grid-cols-2">
@@ -125,27 +322,45 @@ export default function ContactForm() {
                   Imię i nazwisko
                 </span>
                 <input
-                  required
                   name="name"
+                  id="contact-name"
                   value={form.name}
                   onChange={onChange}
-                  className="w-full border border-section bg-cream px-4 py-3 text-ink outline-none transition focus:border-accent"
+                  aria-invalid={Boolean(fieldErrors.name)}
+                  aria-describedby={fieldErrors.name ? "contact-name-error" : undefined}
+                  className={`w-full border bg-cream px-4 py-3 text-ink outline-none transition focus:border-accent ${
+                    fieldErrors.name ? "border-red-600/70" : "border-section"
+                  }`}
                   autoComplete="name"
                 />
+                {fieldErrors.name && (
+                  <p id="contact-name-error" className="mt-1.5 text-sm text-red-800" role="alert">
+                    {fieldErrors.name}
+                  </p>
+                )}
               </label>
               <label className="block">
                 <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-ink/70">
                   Adres e-mail
                 </span>
                 <input
-                  required
                   type="email"
                   name="email"
+                  id="contact-email"
                   value={form.email}
                   onChange={onChange}
-                  className="w-full border border-section bg-cream px-4 py-3 text-ink outline-none transition focus:border-accent"
+                  aria-invalid={Boolean(fieldErrors.email)}
+                  aria-describedby={fieldErrors.email ? "contact-email-error" : undefined}
+                  className={`w-full border bg-cream px-4 py-3 text-ink outline-none transition focus:border-accent ${
+                    fieldErrors.email ? "border-red-600/70" : "border-section"
+                  }`}
                   autoComplete="email"
                 />
+                {fieldErrors.email && (
+                  <p id="contact-email-error" className="mt-1.5 text-sm text-red-800" role="alert">
+                    {fieldErrors.email}
+                  </p>
+                )}
               </label>
             </div>
 
@@ -153,18 +368,13 @@ export default function ContactForm() {
               <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-ink/70">
                 Temat
               </span>
-              <select
-                name="subject"
+              <SubjectSelect
+                id="contact-subject"
                 value={form.subject}
-                onChange={onChange}
-                className="w-full border border-section bg-cream px-4 py-3 text-ink outline-none transition focus:border-accent"
-              >
-                {subjects.map((s) => (
-                  <option key={s.value || "empty"} value={s.value}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(subject) =>
+                  setForm((f) => ({ ...f, subject }))
+                }
+              />
             </label>
 
             <div className="grid gap-5 sm:grid-cols-2">
@@ -172,12 +382,13 @@ export default function ContactForm() {
                 <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-ink/70">
                   Data wydarzenia
                 </span>
-                <input
-                  type="date"
-                  name="event_date"
+                <CalendarPicker
+                  id="contact-event-date"
                   value={form.event_date}
-                  onChange={onChange}
-                  className="w-full border border-section bg-cream px-4 py-3 text-ink outline-none transition focus:border-accent"
+                  onChange={(event_date) =>
+                    setForm((f) => ({ ...f, event_date }))
+                  }
+                  placeholder="Wybierz datę"
                 />
               </label>
               <label className="block">

@@ -17,7 +17,7 @@ export default function About() {
             src={storagePublicUrl(aboutPhotoStoragePath)}
             fallbackSrc={aboutPhotoFallbackSrc}
             alt="Kaja — fotografka"
-            className="aspect-[4/5] w-full object-cover md:aspect-[16/10] md:max-h-[min(70vh,520px)]"
+            className="aspect-[4/5] w-full object-cover"
             loading="eager"
             fetchPriority="high"
           />

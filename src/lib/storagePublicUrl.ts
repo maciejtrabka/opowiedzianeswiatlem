@@ -25,6 +25,8 @@ export function galleryImageFallbackUrl(objectPath: string): string {
 
 /** Public URL for an object in the configured Storage bucket (bucket must be public). */
 export function storagePublicUrl(objectPath: string): string {
+  /** Vite `public/` assets: path starts with `/` (e.g. `/portfolio/01.jpeg`). */
+  if (objectPath.startsWith("/")) return objectPath;
   if (useDemoGallery) return galleryImageFallbackUrl(objectPath);
   const { data } = supabase.storage
     .from(bucket)

@@ -53,7 +53,7 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                 el.src = galleryImageFallbackUrl(item.storagePath);
                 if (import.meta.env.DEV) {
                   console.warn(
-                    "[gallery] Nie załadowano z Supabase — użyto placeholdera. Sprawdź bucket, ścieżkę w portfolio.ts lub ustaw VITE_USE_DEMO_GALLERY_IMAGES=true. Pierwotny URL:",
+                    "[gallery] Nie załadowano obrazu — użyto placeholdera. Sprawdź plik w public/, ścieżkę w portfolio.ts, bucket Supabase lub ustaw VITE_USE_DEMO_GALLERY_IMAGES=true. Pierwotny URL:",
                     storagePublicUrl(item.storagePath),
                   );
                 }
