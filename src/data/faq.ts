@@ -9,7 +9,7 @@ export const faqItems: FaqItem[] = [
     id: "rain",
     question: "Co jeśli w dniu ślubu pada deszcz?",
     answer:
-      "Deszcz nie musi być problemem — często daje wyjątkowy klimat i miękkie światło. Zawsze mam plan B (np. zdjęcia pod daszkami, w plenerze z parasolami lub w wnętrzach). Przed dniem ślubu omawiamy scenariusze, żebyście czuli się spokojnie niezależnie od pogody.",
+      "Deszcz nie musi być problemem — często daje wyjątkowy klimat i miękkie światło. Zawsze mam plan B (np. zdjęcia pod daszkami, w plenerze z parasolami lub we wnętrzach). Przed dniem ślubu omawiamy scenariusze, żebyście czuli się spokojnie niezależnie od pogody.",
   },
   {
     id: "delivery",
